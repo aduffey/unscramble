@@ -18,11 +18,11 @@ func TestTrie(t *testing.T) {
 	}
 	aardvark := "aardvark"
 	if !testTrie.add(aardvark) {
-		t.Errorf(aardvark)
+		t.Errorf(validMsg, aardvark)
 	}
 	shortSphinx := "sphinx"
 	if !testTrie.add(shortSphinx) {
-		t.Errorf(validMsg)
+		t.Errorf(validMsg, shortSphinx)
 	}
 
 	// Try an invalid word
