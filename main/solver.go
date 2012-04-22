@@ -26,7 +26,7 @@ var letterVals = map[rune]int{
 	'a': 1,
 	'b': 1,
 	'c': 4,
-	'd': 4,
+	'd': 2,
 	'e': 1,
 	'f': 1,
 	'g': 3,
