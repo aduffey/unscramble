@@ -27,7 +27,7 @@ var letterVals = map[rune]int{
 	'b': 1,
 	'c': 4,
 	'd': 4,
-	'e': 2,
+	'e': 1,
 	'f': 1,
 	'g': 3,
 	'h': 3,
@@ -101,11 +101,23 @@ func newSolution(path []position, b *board) solution {
 	if len(word) == 2 {
 		score = 1
 	}
+
 	if x2WordModSet {
 		score *= 2
 	}
 	if x3WordModSet {
 		score *= 3
+	}
+
+	// Word length bonus
+	if len(word) == 5 {
+		score += 3
+	} else if len(word) == 6 {
+		score += 6
+	} else if len(word) == 7 {
+		score += 10
+	} else if len(word) > 7 {
+		score += 5*(len(word)-7) + 10
 	}
 
 	return solution{word, score, path}
