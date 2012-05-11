@@ -39,7 +39,7 @@ var letterVals = map[rune]int{
 	'n': 2,
 	'o': 1,
 	'p': 4,
-	'q': 10,
+	'q': 10, // Really 'qu'; 'q' does not appear alone
 	'r': 1,
 	's': 1,
 	't': 1,
@@ -79,6 +79,11 @@ func newSolution(path []position, b *board) solution {
 		char := b.chars[pos.row][pos.col]
 		buf.WriteRune(char)
 
+		// Special case: 'q' never occurs by itself, only as 'qu'
+		if char == 'q' {
+			buf.WriteRune('u')
+		}
+
 		switch b.modifiers[pos.row][pos.col] {
 		case x2Letter:
 			score += letterVals[char] * 2
@@ -96,9 +101,13 @@ func newSolution(path []position, b *board) solution {
 	}
 	word := buf.String()
 
+	// We use the length of the path for scoring, rather than the length of the
+	// actual word, because 'qu' is counted as one letter for scoring purposes
+	length := len(path)
+
 	// Special case: 2-letter words are one point, and only word-modifiers
 	// affect them
-	if len(word) == 2 {
+	if length == 2 {
 		score = 1
 	}
 
@@ -110,14 +119,14 @@ func newSolution(path []position, b *board) solution {
 	}
 
 	// Word length bonus
-	if len(word) == 5 {
+	if length == 5 {
 		score += 3
-	} else if len(word) == 6 {
+	} else if length == 6 {
 		score += 6
-	} else if len(word) == 7 {
+	} else if length == 7 {
 		score += 10
-	} else if len(word) > 7 {
-		score += 5*(len(word)-7) + 10
+	} else if length > 7 {
+		score += 5*(length-7) + 10
 	}
 
 	return solution{word, score, path}
@@ -169,6 +178,10 @@ func solveHelper(pos position, path []position, b *board, curNode *node,
 	// Update to next position
 	curChar := b.chars[pos.row][pos.col]
 	curNode = curNode.getChild(curChar)
+	// Special case: 'q' never occurs by itself, only as 'qu'
+	if curChar == 'q' && curNode != nil {
+		curNode = curNode.getChild('u')
+	}
 	path = append(path, pos)
 
 	// Base case: we are at a leaf in the trie, so there are no more possible
