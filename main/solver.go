@@ -69,7 +69,7 @@ type solution struct {
 	path  []position
 }
 
-func newSolution(path []position, b *board) solution {
+func newSolution(path []position, b *board) *solution {
 	var buf bytes.Buffer
 
 	score := 0
@@ -129,7 +129,7 @@ func newSolution(path []position, b *board) solution {
 		score += 5*(length-7) + 10
 	}
 
-	return solution{word, score, path}
+	return &solution{word, score, path}
 }
 
 // ----- Do the solving -----
@@ -164,7 +164,7 @@ func init() {
 	}
 }
 
-type solutions []solution
+type solutions []*solution
 
 func (sols solutions) Len() int {
 	return len(sols)
@@ -179,7 +179,7 @@ func (sols solutions) Swap(i int, j int) {
 	sols[j], sols[i] = sols[i], sols[j]
 }
 
-func solve(b *board, dict *trie) []solution {
+func solve(b *board, dict *trie) []*solution {
 	var sols solutions
 	for i, row := range b.chars {
 		for j, _ := range row {
@@ -191,7 +191,7 @@ func solve(b *board, dict *trie) []solution {
 
 	// Generate a new list of solutions holding only unique solutions with the
 	// highest score
-	uniqueSols := []solution{}
+	uniqueSols := make([]*solution, 0, len(sols))
 	uniques := newTrie()
 	for _, sol := range sols {
 		if !uniques.contains(sol.word) {

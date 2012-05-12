@@ -56,13 +56,13 @@ func TestSolve(t *testing.T) {
 
 	sols := solve(b, dict)
 
-	expected := []solution{
-		solution{"hilt", 20, []position{position{1, 2}, position{1, 3},
+	expected := []*solution{
+		&solution{"hilt", 20, []position{position{1, 2}, position{1, 3},
 			position{0, 3}, position{0, 2}}},
-		solution{"hit", 16, []position{position{1, 2}, position{1, 3},
+		&solution{"hit", 16, []position{position{1, 2}, position{1, 3},
 			position{0, 2}}},
-		solution{"it", 2, []position{position{1, 3}, position{0, 2}}},
-		solution{"hi", 1, []position{position{1, 2}, position{1, 3}}},
+		&solution{"it", 2, []position{position{1, 3}, position{0, 2}}},
+		&solution{"hi", 1, []position{position{1, 2}, position{1, 3}}},
 	}
 
 	if len(sols) != len(expected) {
@@ -75,7 +75,7 @@ func TestSolve(t *testing.T) {
 	}
 }
 
-func solutionsEqual(sol1 solution, sol2 solution) bool {
+func solutionsEqual(sol1 *solution, sol2 *solution) bool {
 	if sol1.word != sol2.word {
 		return false
 	}
