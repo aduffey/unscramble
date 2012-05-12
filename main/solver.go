@@ -205,14 +205,13 @@ func solve(b *board, dict *trie) []*solution {
 
 func solveHelper(pos position, path []position, b *board, curNode *node,
 	sols *solutions) {
-	// Update to next position
+	// Update our position in the trie
 	curChar := b.chars[pos.row][pos.col]
 	curNode = curNode.getChild(curChar)
 	// Special case: 'q' never occurs by itself, only as 'qu'
 	if curChar == 'q' && curNode != nil {
 		curNode = curNode.getChild('u')
 	}
-	path = append(path, pos)
 
 	// Base case: we are at a leaf in the trie, so there are no more possible
 	// words along this path
@@ -221,6 +220,7 @@ func solveHelper(pos position, path []position, b *board, curNode *node,
 	}
 
 	// Otherwise we are in the recursive case
+	path = append(path, pos)
 	if curNode.isWordEnd() {
 		// We need a copy of the path, because we are mutating it as we go
 		copyPath := make([]position, len(path))
