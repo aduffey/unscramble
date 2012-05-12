@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 )
 
 func loadDict(filename string) (*trie, error) {
@@ -95,11 +96,14 @@ func main() {
 	boardString := os.Args[2]
 
 	fmt.Print("Loading dictionary...\n")
+	loadStart := time.Now()
 	dict, dictErr := loadDict(dictFile)
 	if dictErr != nil {
 		fmt.Printf("Error loading dictionary: %s\n", dictErr.Error())
 		os.Exit(1)
 	}
+	loadElapsed := float32(time.Since(loadStart)) / float32(time.Millisecond)
+	fmt.Printf("Loaded dictionary in %.2fms\n", loadElapsed)
 
 	board, boardErr := parseBoard(boardString)
 	if boardErr != nil {
@@ -108,7 +112,10 @@ func main() {
 	}
 
 	fmt.Print("Solving...\n")
+	solveStart := time.Now()
 	sols := solve(board, dict)
+	solveElapsed := float32(time.Since(solveStart)) / float32(time.Millisecond)
+	fmt.Printf("Solved board in %.2fms\n", solveElapsed)
 	for _, sol := range sols {
 		fmt.Printf("%v\n", sol)
 	}
