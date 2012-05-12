@@ -134,6 +134,36 @@ func newSolution(path []position, b *board) solution {
 
 // ----- Do the solving -----
 
+// Holds a slice containing the neighbors for each board position. We can
+// precompute this.
+var neighbors [rows][cols][]position
+
+func adjacent(pos position) []position {
+	var adj []position
+	startRow := pos.row - 1
+	if startRow < 0 {
+		startRow = 0
+	}
+	for row := startRow; row <= pos.row+1 && row < rows; row++ {
+		startCol := pos.col - 1
+		if startCol < 0 {
+			startCol = 0
+		}
+		for col := startCol; col <= pos.col+1 && col < cols; col++ {
+			adj = append(adj, position{row, col})
+		}
+	}
+	return adj
+}
+
+func init() {
+	for row := 0; row < rows; row++ {
+		for col := 0; col < cols; col++ {
+			neighbors[row][col] = adjacent(position{row, col})
+		}
+	}
+}
+
 type solutions []solution
 
 func (sols solutions) Len() int {
@@ -197,30 +227,13 @@ func solveHelper(pos position, path []position, b *board, curNode *node,
 		copy(copyPath, path)
 		*sols = append(*sols, newSolution(copyPath, b))
 	}
-	for _, nextPos := range adjacent(path[len(path)-1]) {
+	cell := path[len(path)-1]
+	for _, nextPos := range neighbors[cell.row][cell.col] {
 		// Check for cycles
 		if !inPath(path, nextPos) {
 			solveHelper(nextPos, path, b, curNode, sols)
 		}
 	}
-}
-
-func adjacent(pos position) []position {
-	var adj []position
-	startRow := pos.row - 1
-	if startRow < 0 {
-		startRow = 0
-	}
-	for row := startRow; row <= pos.row+1 && row < rows; row++ {
-		startCol := pos.col - 1
-		if startCol < 0 {
-			startCol = 0
-		}
-		for col := startCol; col <= pos.col+1 && col < cols; col++ {
-			adj = append(adj, position{row, col})
-		}
-	}
-	return adj
 }
 
 func inPath(path []position, pos position) bool {
