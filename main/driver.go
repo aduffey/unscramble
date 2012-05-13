@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 	"time"
 )
 
@@ -67,7 +66,7 @@ func parseBoard(boardString string) (*board, error) {
 				err := fmt.Sprintf("Unexpected \"3\" at index %d", index)
 				return nil, parseError(err)
 			}
-		} else if strings.ContainsRune(validChars, char) {
+		} else if validChar(char) {
 			b.chars[row][col] = char
 			col++
 			if col >= cols {

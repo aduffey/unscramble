@@ -1,11 +1,5 @@
 package main
 
-import (
-	"strings"
-)
-
-const validChars = "abcdefghijklmnopqrstuvwxyz"
-
 type trie struct {
 	root *node
 }
@@ -15,7 +9,7 @@ func newTrie() *trie {
 }
 
 func (t trie) add(str string) bool {
-	if !valid(str) {
+	if !validString(str) {
 		return false
 	}
 	curNode := t.root
@@ -58,17 +52,4 @@ func (n *node) getChild(char rune) *node {
 
 func (n *node) setChild(char rune, child *node) {
 	n.children[translate(char)] = child
-}
-
-func valid(str string) bool {
-	for _, char := range str {
-		if !strings.ContainsRune(validChars, char) {
-			return false
-		}
-	}
-	return true
-}
-
-func translate(char rune) int {
-	return strings.IndexRune(validChars, char)
 }
