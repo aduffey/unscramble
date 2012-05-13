@@ -1,13 +1,18 @@
 package solver
 
+// A dictionary that can store only strings that are valid in this game (see
+// ValidString).
 type Dict struct {
 	root *node
 }
 
+// Create a new empty dictionary.
 func NewDict() *Dict {
 	return &Dict{&node{}}
 }
 
+// Add a string to the dictionary. Returns false if the input string was
+// invalid, true otherwise.
 func (d Dict) Add(str string) bool {
 	if !ValidString(str) {
 		return false
@@ -25,6 +30,7 @@ func (d Dict) Add(str string) bool {
 	return true
 }
 
+// Check if the dictionary contains the given string.
 func (d Dict) Contains(str string) bool {
 	curNode := d.root
 	for _, char := range str {
@@ -39,7 +45,7 @@ func (d Dict) Contains(str string) bool {
 
 type node struct {
 	wordEnd  bool
-	children [26]*node
+	children [numValidChars]*node
 }
 
 func (n *node) isWordEnd() bool {

@@ -7,7 +7,7 @@ const numValidChars = 26
 const unicodeBasePoint = 0x61
 
 // Check whether the given string is valid in this game (true if all characters
-// are valid)
+// are valid, i.e. all characters are lowercase a-z).
 func ValidString(str string) bool {
 	for _, char := range str {
 		if !ValidChar(char) {
@@ -17,7 +17,8 @@ func ValidString(str string) bool {
 	return true
 }
 
-// Check whether the given rune is valid in this game
+// Check whether the given rune is valid in this game. Only lowercase a-z are
+// valid.
 func ValidChar(char rune) bool {
 	v := translate(char)
 	if v < 0 || v >= numValidChars {

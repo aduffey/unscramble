@@ -8,10 +8,12 @@ import (
 // ----- Describe the board -----
 
 const (
+	// The size of the board
 	Rows = 4
 	Cols = 4
 )
 
+// A score modifier applied to position on the board.
 type Modifier int
 
 const (
@@ -51,11 +53,13 @@ var letterVals = map[rune]int{
 	'z': 10,
 }
 
+// Represents the game board.
 type Board struct {
 	Chars     [Rows][Cols]rune
 	Modifiers [Rows][Cols]Modifier
 }
 
+// Represents the position of a cell on the board.
 type Position struct {
 	Row int
 	Col int
@@ -63,6 +67,7 @@ type Position struct {
 
 // ----- Describe the solution -----
 
+// A solution to the game.
 type Solution struct {
 	Word  string
 	Score int
@@ -164,6 +169,7 @@ func init() {
 	}
 }
 
+// We just need this to sort the solutions
 type solutions []*Solution
 
 func (sols solutions) Len() int {
@@ -179,6 +185,9 @@ func (sols solutions) Swap(i int, j int) {
 	sols[j], sols[i] = sols[i], sols[j]
 }
 
+// Find all the solutions on the board. The solutions returned will be ordered
+// by score, highest to lowest. If a word can be formed two or more ways, the
+// solutions will only contain the highest scoring possibility.
 func Solve(b *Board, dict *Dict) []*Solution {
 	var sols solutions
 	for i, row := range b.Chars {

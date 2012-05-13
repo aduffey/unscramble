@@ -1,11 +1,11 @@
 package main
 
 import (
-	"solver"
 	"bufio"
 	"fmt"
 	"io"
 	"os"
+	"solver"
 	"time"
 )
 
