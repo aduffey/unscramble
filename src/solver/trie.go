@@ -1,18 +1,18 @@
-package main
+package solver
 
-type trie struct {
+type Dict struct {
 	root *node
 }
 
-func newTrie() *trie {
-	return &trie{&node{}}
+func NewDict() *Dict {
+	return &Dict{&node{}}
 }
 
-func (t trie) add(str string) bool {
-	if !validString(str) {
+func (d Dict) Add(str string) bool {
+	if !ValidString(str) {
 		return false
 	}
-	curNode := t.root
+	curNode := d.root
 	for _, char := range str {
 		nextNode := curNode.getChild(char)
 		if nextNode == nil {
@@ -25,8 +25,8 @@ func (t trie) add(str string) bool {
 	return true
 }
 
-func (t trie) contains(str string) bool {
-	curNode := t.root
+func (d Dict) Contains(str string) bool {
+	curNode := d.root
 	for _, char := range str {
 		nextNode := curNode.getChild(char)
 		if nextNode == nil {

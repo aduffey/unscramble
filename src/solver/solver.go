@@ -1,4 +1,4 @@
-package main
+package solver
 
 import (
 	"bytes"
@@ -8,18 +8,18 @@ import (
 // ----- Describe the board -----
 
 const (
-	rows = 4
-	cols = 4
+	Rows = 4
+	Cols = 4
 )
 
-type modifier int
+type Modifier int
 
 const (
-	none     modifier = iota
-	x2Letter modifier = iota
-	x2Word   modifier = iota
-	x3Letter modifier = iota
-	x3Word   modifier = iota
+	None     Modifier = iota
+	X2Letter Modifier = iota
+	X2Word   Modifier = iota
+	X3Letter Modifier = iota
+	X3Word   Modifier = iota
 )
 
 var letterVals = map[rune]int{
@@ -51,32 +51,32 @@ var letterVals = map[rune]int{
 	'z': 10,
 }
 
-type board struct {
-	chars     [rows][cols]rune
-	modifiers [rows][cols]modifier
+type Board struct {
+	Chars     [Rows][Cols]rune
+	Modifiers [Rows][Cols]Modifier
 }
 
-type position struct {
-	row int
-	col int
+type Position struct {
+	Row int
+	Col int
 }
 
 // ----- Describe the solution -----
 
-type solution struct {
-	word  string
-	score int
-	path  []position
+type Solution struct {
+	Word  string
+	Score int
+	Path  []Position
 }
 
-func newSolution(path []position, b *board) *solution {
+func newSolution(path []Position, b *Board) *Solution {
 	var buf bytes.Buffer
 
 	score := 0
 	x2WordModSet := false
 	x3WordModSet := false
 	for _, pos := range path {
-		char := b.chars[pos.row][pos.col]
+		char := b.Chars[pos.Row][pos.Col]
 		buf.WriteRune(char)
 
 		// Special case: 'q' never occurs by itself, only as 'qu'
@@ -84,18 +84,18 @@ func newSolution(path []position, b *board) *solution {
 			buf.WriteRune('u')
 		}
 
-		switch b.modifiers[pos.row][pos.col] {
-		case x2Letter:
+		switch b.Modifiers[pos.Row][pos.Col] {
+		case X2Letter:
 			score += letterVals[char] * 2
-		case x3Letter:
+		case X3Letter:
 			score += letterVals[char] * 3
-		case x2Word:
+		case X2Word:
 			score += letterVals[char]
 			x2WordModSet = true
-		case x3Word:
+		case X3Word:
 			score += letterVals[char]
 			x3WordModSet = true
-		case none:
+		case None:
 			score += letterVals[char]
 		}
 	}
@@ -129,42 +129,42 @@ func newSolution(path []position, b *board) *solution {
 		score += 5*(length-7) + 10
 	}
 
-	return &solution{word, score, path}
+	return &Solution{word, score, path}
 }
 
 // ----- Do the solving -----
 
 // Holds a slice containing the neighbors for each board position. We can
 // precompute this.
-var neighbors [rows][cols][]position
+var neighbors [Rows][Cols][]Position
 
-func adjacent(pos position) []position {
-	var adj []position
-	startRow := pos.row - 1
+func adjacent(pos Position) []Position {
+	var adj []Position
+	startRow := pos.Row - 1
 	if startRow < 0 {
 		startRow = 0
 	}
-	for row := startRow; row <= pos.row+1 && row < rows; row++ {
-		startCol := pos.col - 1
+	for row := startRow; row <= pos.Row+1 && row < Rows; row++ {
+		startCol := pos.Col - 1
 		if startCol < 0 {
 			startCol = 0
 		}
-		for col := startCol; col <= pos.col+1 && col < cols; col++ {
-			adj = append(adj, position{row, col})
+		for col := startCol; col <= pos.Col+1 && col < Cols; col++ {
+			adj = append(adj, Position{row, col})
 		}
 	}
 	return adj
 }
 
 func init() {
-	for row := 0; row < rows; row++ {
-		for col := 0; col < cols; col++ {
-			neighbors[row][col] = adjacent(position{row, col})
+	for row := 0; row < Rows; row++ {
+		for col := 0; col < Cols; col++ {
+			neighbors[row][col] = adjacent(Position{row, col})
 		}
 	}
 }
 
-type solutions []*solution
+type solutions []*Solution
 
 func (sols solutions) Len() int {
 	return len(sols)
@@ -172,18 +172,18 @@ func (sols solutions) Len() int {
 
 func (sols solutions) Less(i int, j int) bool {
 	// So we order by *decreasing* score
-	return sols[i].score > sols[j].score
+	return sols[i].Score > sols[j].Score
 }
 
 func (sols solutions) Swap(i int, j int) {
 	sols[j], sols[i] = sols[i], sols[j]
 }
 
-func solve(b *board, dict *trie) []*solution {
+func Solve(b *Board, dict *Dict) []*Solution {
 	var sols solutions
-	for i, row := range b.chars {
+	for i, row := range b.Chars {
 		for j, _ := range row {
-			solveHelper(position{i, j}, []position{}, b, dict.root, &sols)
+			solveHelper(Position{i, j}, []Position{}, b, dict.root, &sols)
 		}
 	}
 
@@ -191,22 +191,22 @@ func solve(b *board, dict *trie) []*solution {
 
 	// Generate a new list of solutions holding only unique solutions with the
 	// highest score
-	uniqueSols := make([]*solution, 0, len(sols))
-	uniques := newTrie()
+	uniqueSols := make([]*Solution, 0, len(sols))
+	uniques := NewDict()
 	for _, sol := range sols {
-		if !uniques.contains(sol.word) {
+		if !uniques.Contains(sol.Word) {
 			uniqueSols = append(uniqueSols, sol)
-			uniques.add(sol.word)
+			uniques.Add(sol.Word)
 		}
 	}
 
 	return uniqueSols
 }
 
-func solveHelper(pos position, path []position, b *board, curNode *node,
+func solveHelper(pos Position, path []Position, b *Board, curNode *node,
 	sols *solutions) {
 	// Update our position in the trie
-	curChar := b.chars[pos.row][pos.col]
+	curChar := b.Chars[pos.Row][pos.Col]
 	curNode = curNode.getChild(curChar)
 	// Special case: 'q' never occurs by itself, only as 'qu'
 	if curChar == 'q' && curNode != nil {
@@ -223,12 +223,12 @@ func solveHelper(pos position, path []position, b *board, curNode *node,
 	path = append(path, pos)
 	if curNode.isWordEnd() {
 		// We need a copy of the path, because we are mutating it as we go
-		copyPath := make([]position, len(path))
+		copyPath := make([]Position, len(path))
 		copy(copyPath, path)
 		*sols = append(*sols, newSolution(copyPath, b))
 	}
 	cell := path[len(path)-1]
-	for _, nextPos := range neighbors[cell.row][cell.col] {
+	for _, nextPos := range neighbors[cell.Row][cell.Col] {
 		// Check for cycles
 		if !inPath(path, nextPos) {
 			solveHelper(nextPos, path, b, curNode, sols)
@@ -236,7 +236,7 @@ func solveHelper(pos position, path []position, b *board, curNode *node,
 	}
 }
 
-func inPath(path []position, pos position) bool {
+func inPath(path []Position, pos Position) bool {
 	for _, p := range path {
 		if pos == p {
 			return true

@@ -1,4 +1,4 @@
-package main
+package solver
 
 // The number of valid characters
 const numValidChars = 26
@@ -8,9 +8,9 @@ const unicodeBasePoint = 0x61
 
 // Check whether the given string is valid in this game (true if all characters
 // are valid)
-func validString(str string) bool {
+func ValidString(str string) bool {
 	for _, char := range str {
-		if !validChar(char) {
+		if !ValidChar(char) {
 			return false
 		}
 	}
@@ -18,7 +18,7 @@ func validString(str string) bool {
 }
 
 // Check whether the given rune is valid in this game
-func validChar(char rune) bool {
+func ValidChar(char rune) bool {
 	v := translate(char)
 	if v < 0 || v >= numValidChars {
 		return false

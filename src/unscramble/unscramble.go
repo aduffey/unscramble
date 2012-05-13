@@ -1,6 +1,7 @@
 package main
 
 import (
+	"solver"
 	"bufio"
 	"fmt"
 	"io"
@@ -8,14 +9,14 @@ import (
 	"time"
 )
 
-func loadDict(filename string) (*trie, error) {
+func loadDict(filename string) (*solver.Dict, error) {
 	f, fileErr := os.Open(filename)
 	if fileErr != nil {
 		return nil, fileErr
 	}
 	defer f.Close()
 
-	dict := newTrie()
+	dict := solver.NewDict()
 	reader := bufio.NewReader(f)
 	for {
 		line, isPrefix, readErr := reader.ReadLine()
@@ -26,7 +27,7 @@ func loadDict(filename string) (*trie, error) {
 			break
 		}
 		// TODO(aduffey) check if valid
-		dict.add(string(line))
+		dict.Add(string(line))
 	}
 
 	return dict, nil
@@ -38,38 +39,38 @@ func (pe parseError) Error() string {
 	return string(pe)
 }
 
-func parseBoard(boardString string) (*board, error) {
-	b := &board{}
+func parseBoard(boardString string) (*solver.Board, error) {
+	b := &solver.Board{}
 	row, col := 0, 0
 	for index, char := range boardString {
-		if row >= rows || col >= cols {
+		if row >= solver.Rows || col >= solver.Cols {
 			err := fmt.Sprintf("Input string is too long, expected %d cells",
-				rows*cols)
+				solver.Rows*solver.Cols)
 			return nil, parseError(err)
 		}
 
 		if char == '2' {
-			if b.modifiers[row][col] == none {
-				b.modifiers[row][col] = x2Letter
-			} else if b.modifiers[row][col] == x2Letter {
-				b.modifiers[row][col] = x2Word
+			if b.Modifiers[row][col] == solver.None {
+				b.Modifiers[row][col] = solver.X2Letter
+			} else if b.Modifiers[row][col] == solver.X2Letter {
+				b.Modifiers[row][col] = solver.X2Word
 			} else {
 				err := fmt.Sprintf("Unexpected \"2\" at index %v", index)
 				return nil, parseError(err)
 			}
 		} else if char == '3' {
-			if b.modifiers[row][col] == none {
-				b.modifiers[row][col] = x3Letter
-			} else if b.modifiers[row][col] == x3Letter {
-				b.modifiers[row][col] = x3Word
+			if b.Modifiers[row][col] == solver.None {
+				b.Modifiers[row][col] = solver.X3Letter
+			} else if b.Modifiers[row][col] == solver.X3Letter {
+				b.Modifiers[row][col] = solver.X3Word
 			} else {
 				err := fmt.Sprintf("Unexpected \"3\" at index %d", index)
 				return nil, parseError(err)
 			}
-		} else if validChar(char) {
-			b.chars[row][col] = char
+		} else if solver.ValidChar(char) {
+			b.Chars[row][col] = char
 			col++
-			if col >= cols {
+			if col >= solver.Cols {
 				row++
 				col = 0
 			}
@@ -78,9 +79,10 @@ func parseBoard(boardString string) (*board, error) {
 			return nil, parseError(err)
 		}
 	}
-	if row < (rows-1) || row == (rows-1) && col < (cols-1) {
+	if row < (solver.Rows-1) || row == (solver.Rows-1) &&
+		col < (solver.Cols-1) {
 		err := fmt.Sprintf("Input string is too short, expected %d cells",
-			rows*cols)
+			solver.Rows*solver.Cols)
 		return nil, parseError(err)
 	}
 	return b, nil
@@ -112,7 +114,7 @@ func main() {
 
 	fmt.Print("Solving...\n")
 	solveStart := time.Now()
-	sols := solve(board, dict)
+	sols := solver.Solve(board, dict)
 	solveElapsed := float32(time.Since(solveStart)) / float32(time.Millisecond)
 	fmt.Printf("Solved board in %.2fms\n", solveElapsed)
 	for _, sol := range sols {
