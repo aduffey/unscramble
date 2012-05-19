@@ -21,10 +21,7 @@ func ValidString(str string) bool {
 // valid.
 func ValidChar(char rune) bool {
 	v := translate(char)
-	if v < 0 || v >= numValidChars {
-		return false
-	}
-	return true
+	return v >= 0 && v < numValidChars
 }
 
 // Translate the given rune to an int between 0 and numValidChars-1 (inclusive).
