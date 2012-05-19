@@ -2,6 +2,7 @@ package solver
 
 import (
 	"bytes"
+	"fmt"
 	"sort"
 )
 
@@ -57,6 +58,82 @@ var letterVals = map[rune]int{
 type Board struct {
 	Chars     [Rows][Cols]rune
 	Modifiers [Rows][Cols]Modifier
+}
+
+// Create a game board from a string representation. The format is a simple list
+// of letters on the board, in row major order. Prepending a letter with "2" or
+// "3" specifies that cell as a double or triple letter bonus. Prepending a
+// letter with "22" or "33" specifies that cell as a double or triple word
+// bonus.
+//
+// A "Qu" cell is represented simply by a "q" character.
+//
+// Thus, the following string:
+//
+//     2abcdefghij22klmnqp
+//
+// represents the board:
+//
+//     A  B  C  D
+//     E  F  G  H
+//     I  J  K  L
+//     M  N  Qu P
+//
+// where the "A" has a double letter bonus and the "K" has a double word bonus.
+//
+// If an error occurs while parsing, a non-nil error value will be returned.
+func NewBoardFromString(boardString string) (*Board, error) {
+	b := &Board{}
+	row, col := 0, 0
+	for index, char := range boardString {
+		if row >= Rows || col >= Cols {
+			err := fmt.Sprintf("Input string is too long, expected %d cells",
+				Rows*Cols)
+			return nil, parseError(err)
+		}
+
+		if char == '2' {
+			if b.Modifiers[row][col] == None {
+				b.Modifiers[row][col] = X2Letter
+			} else if b.Modifiers[row][col] == X2Letter {
+				b.Modifiers[row][col] = X2Word
+			} else {
+				err := fmt.Sprintf("Unexpected \"2\" at index %v", index)
+				return nil, parseError(err)
+			}
+		} else if char == '3' {
+			if b.Modifiers[row][col] == None {
+				b.Modifiers[row][col] = X3Letter
+			} else if b.Modifiers[row][col] == X3Letter {
+				b.Modifiers[row][col] = X3Word
+			} else {
+				err := fmt.Sprintf("Unexpected \"3\" at index %d", index)
+				return nil, parseError(err)
+			}
+		} else if ValidChar(char) {
+			b.Chars[row][col] = char
+			col++
+			if col >= Cols {
+				row++
+				col = 0
+			}
+		} else {
+			err := fmt.Sprintf("Invalid symbol %v at index %d", char, index)
+			return nil, parseError(err)
+		}
+	}
+	if row < (Rows-1) || row == (Rows-1) && col < (Cols-1) {
+		err := fmt.Sprintf("Input string is too short, expected %d cells",
+			Rows*Cols)
+		return nil, parseError(err)
+	}
+	return b, nil
+}
+
+type parseError string
+
+func (pe parseError) Error() string {
+	return string(pe)
 }
 
 // Represents the position of a cell on the board.

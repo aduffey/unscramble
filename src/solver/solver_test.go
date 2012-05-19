@@ -92,3 +92,30 @@ func solutionsEqual(sol1 *Solution, sol2 *Solution) bool {
 	}
 	return true
 }
+
+func TestBoard(t *testing.T) {
+	boardString := "2abcdefghij22klmnqp"
+	board, err := NewBoardFromString(boardString)
+	if err != nil {
+		t.Errorf("Error while parsing valid board string \"%s\"", boardString)
+	}
+
+	chars := [Rows][Cols]rune{
+		{'a', 'b', 'c', 'd'},
+		{'e', 'f', 'g', 'h'},
+		{'i', 'j', 'k', 'l'},
+		{'m', 'n', 'q', 'p'},
+	}
+	modifiers := [Rows][Cols]Modifier{
+		{X2Letter, None, None, None},
+		{None, None, None, None},
+		{None, None, X2Word, None},
+		{None, None, None, None},
+	}
+	expectedBoard := &Board{chars, modifiers}
+
+	if *board != *expectedBoard {
+		t.Errorf("Incorrectly parsed board: expected %v, got %v", expectedBoard,
+			board)
+	}
+}

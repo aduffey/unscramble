@@ -33,61 +33,6 @@ func loadDict(filename string) (*solver.Dict, error) {
 	return dict, nil
 }
 
-type parseError string
-
-func (pe parseError) Error() string {
-	return string(pe)
-}
-
-func parseBoard(boardString string) (*solver.Board, error) {
-	b := &solver.Board{}
-	row, col := 0, 0
-	for index, char := range boardString {
-		if row >= solver.Rows || col >= solver.Cols {
-			err := fmt.Sprintf("Input string is too long, expected %d cells",
-				solver.Rows*solver.Cols)
-			return nil, parseError(err)
-		}
-
-		if char == '2' {
-			if b.Modifiers[row][col] == solver.None {
-				b.Modifiers[row][col] = solver.X2Letter
-			} else if b.Modifiers[row][col] == solver.X2Letter {
-				b.Modifiers[row][col] = solver.X2Word
-			} else {
-				err := fmt.Sprintf("Unexpected \"2\" at index %v", index)
-				return nil, parseError(err)
-			}
-		} else if char == '3' {
-			if b.Modifiers[row][col] == solver.None {
-				b.Modifiers[row][col] = solver.X3Letter
-			} else if b.Modifiers[row][col] == solver.X3Letter {
-				b.Modifiers[row][col] = solver.X3Word
-			} else {
-				err := fmt.Sprintf("Unexpected \"3\" at index %d", index)
-				return nil, parseError(err)
-			}
-		} else if solver.ValidChar(char) {
-			b.Chars[row][col] = char
-			col++
-			if col >= solver.Cols {
-				row++
-				col = 0
-			}
-		} else {
-			err := fmt.Sprintf("Invalid symbol %v at index %d", char, index)
-			return nil, parseError(err)
-		}
-	}
-	if row < (solver.Rows-1) || row == (solver.Rows-1) &&
-		col < (solver.Cols-1) {
-		err := fmt.Sprintf("Input string is too short, expected %d cells",
-			solver.Rows*solver.Cols)
-		return nil, parseError(err)
-	}
-	return b, nil
-}
-
 func main() {
 	if len(os.Args) != 3 {
 		fmt.Print("Error: invalid arguments\n")
@@ -106,7 +51,7 @@ func main() {
 	loadElapsed := float32(time.Since(loadStart)) / float32(time.Millisecond)
 	fmt.Printf("Loaded dictionary in %.2fms\n", loadElapsed)
 
-	board, boardErr := parseBoard(boardString)
+	board, boardErr := solver.NewBoardFromString(boardString)
 	if boardErr != nil {
 		fmt.Printf("Error parsing board: %s\n", boardErr.Error())
 		os.Exit(1)
