@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"solver"
 	"time"
+	"unscramble/solver"
 )
 
 func loadDict(filename string) (*solver.Dict, error) {

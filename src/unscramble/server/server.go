@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"solver"
+	"unscramble/solver"
 )
 
 const (
