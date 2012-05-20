@@ -4,7 +4,7 @@ const X2_WORD_CLASS = 'x2Word'
 const X3_LETTER_CLASS = 'x3Letter'
 const X3_WORD_CLASS = 'x3Word'
 
-function handleKey(input, event, nextInputName) {
+function handleKey(input, event) {
     event.preventDefault()  // We'll handle the input ourselves
     var key = event.keyCode || event.which;
     var keyChar = event.key || String.fromCharCode(key);
@@ -16,9 +16,7 @@ function handleKey(input, event, nextInputName) {
         } else {
             input.value = keyChar
         }
-        if (nextInputName != '') {
-            document.getElementsByName(nextInputName)[0].focus()
-        }
+        focusNextInput(input)
     } else if (keyChar === '2') {
         var cls = input.className
         if (cls === X2_LETTER_CLASS) {
@@ -36,6 +34,16 @@ function handleKey(input, event, nextInputName) {
             input.className = ''
         } else {
             input.className = X3_LETTER_CLASS
+        }
+    }
+}
+
+function focusNextInput(currentInput) {
+    var form = currentInput.form
+    for (var i = 0; i < form.elements.length; i++) {
+        var el = form.elements[i]
+        if (el === currentInput && i < form.elements.length - 1) {
+            form.elements[i + 1].focus()
         }
     }
 }

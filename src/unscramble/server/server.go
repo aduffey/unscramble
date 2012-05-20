@@ -24,11 +24,6 @@ var (
 	tmpl *template.Template
 )
 
-// The context for the template.
-type context struct {
-	Solutions []*solver.Solution
-}
-
 func fileExists(name string) bool {
 	_, err := os.Stat(name)
 	return err == nil || os.IsExist(err)
@@ -54,7 +49,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[len(prefix):]
 	if path == "" {
 		// Go to the main page
-		ctx := &context{}
+		ctx := emptyContext()
 		serveTemplate(w, tmpl, ctx)
 	} else if file := staticRoot + path; fileExists(file) {
 		// If the path matches a static file, serve it up
@@ -62,7 +57,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	} else if board, err := solver.NewBoardFromString(path); err == nil {
 		// Path represents a valid board string, show the solutions
 		solutions := solver.Solve(board, dict)
-		ctx := &context{solutions}
+		ctx := newContext(board, solutions)
 		serveTemplate(w, tmpl, ctx)
 	} else {
 		http.NotFound(w, r)
