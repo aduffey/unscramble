@@ -1,0 +1,15 @@
+input.x2Letter {
+    background-color: yellow;
+}
+
+input.x2Word {
+    background-color: green;
+}
+
+input.x3Letter {
+    background-color: orange;
+}
+
+input.x3Word {
+    background-color: red;
+}
