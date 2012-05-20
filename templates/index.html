@@ -10,9 +10,39 @@
 	<!--<link rel="stylesheet/css" href="">-->
 </head>
 <body>
+<script src="/js/script.js" type="text/javascript"></script>
 <div id="container">
     <h1>Unscramble</h1>
     <p>Solve boards from <em>Scramble With Friends</em>.</p>
+    <form id="board" action="javascript:handleSubmit()">
+        <table>
+            <tr>
+                <td><input type="text" name="row0col0" maxlength="2" onkeypress="handleKey(this, event, 'row0col1')" /></td>
+                <td><input type="text" name="row0col1" maxlength="2" onkeypress="handleKey(this, event, 'row0col2')" /></td>
+                <td><input type="text" name="row0col2" maxlength="2" onkeypress="handleKey(this, event, 'row0col3')" /></td>
+                <td><input type="text" name="row0col3" maxlength="2" onkeypress="handleKey(this, event, 'row1col0')" /></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="row1col0" maxlength="2" onkeypress="handleKey(this, event, 'row1col1')" /></td>
+                <td><input type="text" name="row1col1" maxlength="2" onkeypress="handleKey(this, event, 'row1col2')" /></td>
+                <td><input type="text" name="row1col2" maxlength="2" onkeypress="handleKey(this, event, 'row1col3')" /></td>
+                <td><input type="text" name="row1col3" maxlength="2" onkeypress="handleKey(this, event, 'row2col0')" /></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="row2col0" maxlength="2" onkeypress="handleKey(this, event, 'row2col1')" /></td>
+                <td><input type="text" name="row2col1" maxlength="2" onkeypress="handleKey(this, event, 'row2col2')" /></td>
+                <td><input type="text" name="row2col2" maxlength="2" onkeypress="handleKey(this, event, 'row2col3')" /></td>
+                <td><input type="text" name="row2col3" maxlength="2" onkeypress="handleKey(this, event, 'row3col0')" /></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="row3col0" maxlength="2" onkeypress="handleKey(this, event, 'row3col1')" /></td>
+                <td><input type="text" name="row3col1" maxlength="2" onkeypress="handleKey(this, event, 'row3col2')" /></td>
+                <td><input type="text" name="row3col2" maxlength="2" onkeypress="handleKey(this, event, 'row3col3')" /></td>
+                <td><input type="text" name="row3col3" maxlength="2" onkeypress="handleKey(this, event, 'solve')" /></td>
+            </tr>
+        </table>
+        <input type="submit" name="solve" value="Solve" />
+    </form>
     {{if .Solutions}}
     <section id="solutions">
     <table>
