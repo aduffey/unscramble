@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Unscramble</title>
+	<meta name="description" content="Unscramble solves boards from Scramble with Friends.">
+	<meta name="author" content="Andrew Duffey">
+	<meta name="viewport" content="width=device-width">
+	<!--<link rel="stylesheet/css" href="">-->
+</head>
+<body>
+<div id="container">
+    <h1>Unscramble</h1>
+    <p>Solve boards from <em>Scramble With Friends</em>.</p>
+    {{if .Solutions}}
+    <section id="solutions">
+    <table>
+        {{range .Solutions}}
+        <tr>
+            <td><a href="http://en.wiktionary.org/wiki/{{.Word}}">{{.Word}}</a></td>
+            <td>{{.Path}}</td>
+            <td>{{.Score}}</td>
+        </tr>
+        {{end}}
+    </table>
+    </section>
+    {{end}}
+</div>
+</body>
+</html>
