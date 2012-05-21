@@ -1,15 +1,79 @@
+body {
+    font-family: "Lucida Sans", "Droid Sans", "Verdana", "Bitstream Vera Sans" sans-serif;
+    background-color: #e1dccf;
+    padding: 0;
+    margin: 0;
+}
+
+div#container {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 700px;
+    max-width: 100%;
+    background-color: white;
+    border-right: 1px solid #e1d5b4;
+    border-left: 1px solid #e1d5b4;
+    padding: 30px;
+}
+
+input {
+    font-size: 22px;
+    font-weight: bold;
+    color: #555;
+    height: 44px;
+    width: 44px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #aaa;
+    border-radius: 4px;
+    background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0) 25%);
+    background: -ms-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0) 25%);
+    background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0) 25%);
+    background: linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0) 25%);
+    text-align: center;
+}
+
+input:focus {
+    -moz-box-shadow: 0 0 3px 3px #eee;
+    -webkit-box-shadow:0 0 3px 3px #eee;
+    box-shadow: 0 0 3px 3px #eee;
+}
+
 input.x2Letter {
-    background-color: yellow;
+    background-color: #f2ffe1;
 }
 
 input.x2Word {
-    background-color: green;
+    background-color: #dbffab;
 }
 
 input.x3Letter {
-    background-color: orange;
+    background-color: #e7fbf8;
 }
 
 input.x3Word {
-    background-color: red;
+    background-color: #a7fbee;
+}
+
+input.submit {
+    width: 100%;
+    border-width: 1px;
+    background: -moz-linear-gradient(top, #777, #555);
+    background: -ms-linear-gradient(top, #777, #555);
+    background: -webkit-linear-gradient(top, #777, #555);
+    background: linear-gradient(top, #777, #555);
+    color: #fff;
+}
+
+input.submit:active {
+    background: -moz-linear-gradient(top, #555, #777);
+    background: -ms-linear-gradient(top, #555, #777);
+    background: -webkit-linear-gradient(top, #555, #777);
+    background: linear-gradient(top, #555, #777);
+}
+
+input.submit:focus {
+    border-color: #aaa;
 }
