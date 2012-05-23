@@ -14,41 +14,46 @@ const (
 	x3WordClass   = "x3Word"
 )
 
+// The CSS class name corresponding to a cell that is part of a specific
+// solution. Like above this must agree with classes declared elsewhere!
+const inSolutionClass = "inSolution"
+
 // The context for the template.
 type context struct {
 	Board     [solver.Rows][solver.Cols]*cell
-	Solutions []*solver.Solution
+	Solutions []*solution
 }
 
 func newContext(b *solver.Board, sols []*solver.Solution) *context {
-	ctxBoard := [solver.Rows][solver.Cols]*cell{}
-	for i, row := range b.Chars {
-		for j, v := range row {
-			var value string
-			if v == 'q' {
-				value = "Qu"
-			} else {
-				value = strings.ToUpper(string(v))
+	// Make the main board
+	ctxBoard := populateBoardLetters(b)
+	// Set the modifiers
+	for i, row := range b.Modifiers {
+		for j, mod := range row {
+			class := ""
+			if mod == solver.X2Letter {
+				class = x2LetterClass
+			} else if mod == solver.X2Word {
+				class = x2WordClass
+			} else if mod == solver.X3Letter {
+				class = x3LetterClass
+			} else if mod == solver.X3Word {
+				class = x3WordClass
 			}
-
-			var modifier string
-			m := b.Modifiers[i][j]
-			if m == solver.X2Letter {
-				modifier = x2LetterClass
-			} else if m == solver.X2Word {
-				modifier = x2WordClass
-			} else if m == solver.X3Letter {
-				modifier = x3LetterClass
-			} else if m == solver.X3Word {
-				modifier = x3WordClass
-			} else {
-				modifier = ""
-			}
-
-			ctxBoard[i][j] = &cell{value, modifier}
+			ctxBoard[i][j].Class = class
 		}
 	}
-	return &context{ctxBoard, sols}
+
+	// Make the solutions
+	ctxSols := make([]*solution, len(sols))
+	for i, sol := range sols {
+		solBoard := populateBoardLetters(b)
+		for _, pos := range sol.Path {
+			solBoard[pos.Row][pos.Col].Class = inSolutionClass
+		}
+		ctxSols[i] = &solution{sol.Word, sol.Score, solBoard}
+	}
+	return &context{ctxBoard, ctxSols}
 }
 
 func emptyContext() *context {
@@ -58,11 +63,33 @@ func emptyContext() *context {
 			ctxBoard[i][j] = &cell{"", ""}
 		}
 	}
-	sols := []*solver.Solution{}
+	sols := []*solution{}
 	return &context{ctxBoard, sols}
 }
 
 type cell struct {
 	Value string
 	Class string
+}
+
+type solution struct {
+	Word  string
+	Score int
+	Board [solver.Rows][solver.Cols]*cell
+}
+
+func populateBoardLetters(b *solver.Board) [solver.Rows][solver.Cols]*cell {
+	ctxBoard := [solver.Rows][solver.Cols]*cell{}
+	for i, row := range b.Chars {
+		for j, v := range row {
+			var value string
+			if v == 'q' {
+				value = "Qu"
+			} else {
+				value = strings.ToUpper(string(v))
+			}
+			ctxBoard[i][j] = &cell{value, ""}
+		}
+	}
+	return ctxBoard
 }

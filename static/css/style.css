@@ -1,8 +1,9 @@
 body {
-    font-family: "Lucida Sans", "Droid Sans", "Verdana", "Bitstream Vera Sans" sans-serif;
-    background-color: #e1dccf;
+    font-family: "Lucida Grande", "Droid Sans", "Calibri", "Bitstream Vera Sans", "DejaVu Sans", sans-serif;
     padding: 0;
     margin: 0;
+    background-color: white;
+    color: #222;
 }
 
 div#container {
@@ -12,10 +13,6 @@ div#container {
     margin-bottom: 0;
     width: 700px;
     max-width: 100%;
-    background-color: white;
-    border-right: 1px solid #e1d5b4;
-    border-left: 1px solid #e1d5b4;
-    padding: 30px;
 }
 
 input {
@@ -76,4 +73,73 @@ input.submit:active {
 
 input.submit:focus {
     border-color: #aaa;
+}
+
+/* Solution styles */
+
+ul#solutionList {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+ul#solutionList li {
+    display: inline-block;
+    margin-right: 20px;
+    margin-bottom: 40px;
+    /*float: left;*/
+}
+
+a.word {
+    font-weight: bold;
+    text-decoration: none;
+    color: #222;
+}
+
+span.score {
+    font-weight:bold;
+    color: #999;
+}
+
+div.gradientContainer {
+    margin-top: 5px;
+}
+
+table.solutionBoard {
+    overflow: hidden;
+    position: static;
+    color: #555;
+    border-spacing: 0;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #aaa;
+    border-radius: 4px;
+    text-align: center;
+    z-index: 1;
+}
+
+table.solutionBoard td {
+    font-size: 14px;
+    font-weight: bold;
+    height: 28px;
+    width: 28px;
+    padding: 0;
+    margin: 0;
+}
+
+table.solutionBoard td.inSolution {
+    background-color: #ffabab;
+}
+
+div.solutionGradient {
+    position: absolute;
+    height: 114px;
+    width: 114px;
+    border-width: 0;
+    border-radius: 4px;
+    background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0) 25%);
+    background: -ms-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0) 25%);
+    background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0) 25%);
+    background: linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0) 25%);
+    z-index: 2;
 }
