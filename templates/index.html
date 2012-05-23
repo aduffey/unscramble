@@ -12,47 +12,47 @@
 <body>
 <script src="/js/script.js" type="text/javascript"></script>
 <div id="container">
-    <h1>Unscramble</h1>
-    <p>Solve boards from <em>Scramble With Friends</em>.</p>
-    <form id="board" action="javascript:handleSubmit()">
-        <table>
-            {{range .Board}}
-            <tr>
-                {{range .}}
-                <td><input type="text"{{if .Class}} class="{{.Class}}"{{end}}{{if .Value}} value="{{.Value}}"{{end}} maxlength="2" onkeypress="handleKey(this, event)" /></td>
-                {{end}}
-            </tr>
-            {{end}}
-            <tr>
-                <td colspan="{{index .Board 0 | len}}"><input type="submit" name="solve" class="submit" value="Solve" /></td>
-            </tr>
-        </table>
-    </form>
-    {{if .Solutions}}
-    <section id="solutions">
-    <h2>{{len .Solutions}} Words Found</h2>
-    <ul id="solutionList">
-        {{range .Solutions}}
-        <li>
-            <a href="http://en.wiktionary.org/wiki/{{.Word}}" class="word">{{.Word}}</a> <span class="score">{{.Score}}</span><br />
-            <!-- Nasty div hack to get a gradient superimposed over the table -->
-            <div class="gradientContainer">
-            <div class="solutionGradient"></div>
-            <table class="solutionBoard">
-                {{range .Board}}
-                <tr>
-                    {{range .}}
-                    <td{{if .Class}} class="{{.Class}}"{{end}}>{{.Value}}</td>
-                    {{end}}
-                </tr>
-                {{end}}
-            </table>
-            </div>
-        </li>
-        {{end}}
-    </ul>
-    </section>
-    {{end}}
+	<h1>Unscramble</h1>
+	<p>Solve boards from <em>Scramble With Friends</em>.</p>
+	<form id="board" action="javascript:handleSubmit()">
+		<table>
+			{{range .Board}}
+			<tr>
+				{{range .}}
+				<td><input type="text"{{if .Class}} class="{{.Class}}"{{end}}{{if .Value}} value="{{.Value}}"{{end}} maxlength="2" onkeypress="handleKey(this, event)" /></td>
+				{{end}}
+			</tr>
+			{{end}}
+			<tr>
+				<td colspan="{{index .Board 0 | len}}"><input type="submit" name="solve" class="submit" value="Solve" /></td>
+			</tr>
+		</table>
+	</form>
+	{{if .Solutions}}
+	<section id="solutions">
+	<h2>{{len .Solutions}} Words Found</h2>
+	<ul id="solutionList">
+		{{range .Solutions}}
+		<li>
+			<a href="http://en.wiktionary.org/wiki/{{.Word}}" class="word">{{.Word}}</a> <span class="score">{{.Score}}</span><br />
+			<!-- Nasty div hack to get a gradient superimposed over the table -->
+			<div class="gradientContainer">
+			<div class="solutionGradient"></div>
+			<table class="solutionBoard">
+				{{range .Board}}
+				<tr>
+					{{range .}}
+					<td{{if .Class}} class="{{.Class}}"{{end}}>{{.Value}}</td>
+					{{end}}
+				</tr>
+				{{end}}
+			</table>
+			</div>
+		</li>
+		{{end}}
+	</ul>
+	</section>
+	{{end}}
 </div>
 </body>
 </html>
