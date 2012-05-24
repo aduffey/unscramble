@@ -211,3 +211,14 @@ div.solutionGradient {
 	background: linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0) 25%);
 	z-index: 2;
 }
+
+/* Footer styles */
+
+footer {
+	margin-top: 50px;
+}
+
+footer p {
+	font-size: 11px;
+	color: #555;
+}
