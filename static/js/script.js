@@ -35,6 +35,12 @@ function handleKey(input, event) {
 		} else {
 			input.className = X3_LETTER_CLASS
 		}
+	} else if (keyChar === '\t') {
+		// Firefox catches tabs on a keypress, so we have to deal with them
+		focusNextInput(input)
+	} else if (keyChar === '\n' || keyChar === '\r\n' || keyChar === '\r') {
+		// Firefox catches enter as well
+		handleSubmit()
 	}
 }
 
