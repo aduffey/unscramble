@@ -15,6 +15,10 @@ div#container {
 	max-width: 100%;
 }
 
+h1, h2 {
+	font-family: "Bree Serif", "Lucida Grande", "Droid Sans", "Calibri", "Bitstream Vera Sans", "DejaVu Sans", sans-serif;
+}
+
 input {
 	font-size: 22px;
 	font-weight: bold;
