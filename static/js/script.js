@@ -81,6 +81,16 @@ function handleSubmit() {
 		if (c === 'qu') {
 			c = 'q'
 		}
+
+		if (!c) {
+			alert("You haven't filled out the board yet.")
+			return
+		}
+		if (VALID_CHARS.toLowerCase().lastIndexOf(c) < 0) {
+			alert("That's not a valid board.")
+			return
+		}
+
 		boardString += c
 	}
 	window.location.href = '/' + boardString
