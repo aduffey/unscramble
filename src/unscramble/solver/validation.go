@@ -2,8 +2,8 @@ package solver
 
 // The min and max Unicode code points for valid characters.
 const (
-	unicodeMinPoint = 0x61  // 'a'
-	unicodeMaxPoint = unicodeMinPoint + 26 - 1  // 'z'
+	unicodeMinPoint = 0x61                     // 'a'
+	unicodeMaxPoint = unicodeMinPoint + 26 - 1 // 'z'
 )
 
 // ValidString checks whether the given string is valid in this game (true if

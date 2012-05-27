@@ -47,10 +47,10 @@ func (d Dict) Contains(str string) bool {
 // to storing a dense array of children with one element for each possible child
 // pointer, most of which would be nil in a large trie.
 type node struct {
-	value byte
-	wordEnd  bool
-	next *node
-	child *node
+	value   byte
+	wordEnd bool
+	next    *node
+	child   *node
 }
 
 // getChild retrieves the child of the current node for the given value. Returns
