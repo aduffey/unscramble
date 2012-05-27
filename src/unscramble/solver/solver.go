@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"sort"
+	"unicode/utf8"
 )
 
 // ----- Describe the board -----
@@ -293,11 +294,7 @@ func solveHelper(pos Position, path []Position, b *Board, curNode *node,
 	sols *solutions) {
 	// Update our position in the trie
 	curChar := b.Chars[pos.Row][pos.Col]
-	curNode = curNode.getChild(curChar)
-	// Special case: 'q' never occurs by itself, only as 'qu'
-	if curChar == 'q' && curNode != nil {
-		curNode = curNode.getChild('u')
-	}
+	curNode = nextNode(curNode, curChar)
 
 	// Base case: we are at a leaf in the trie, so there are no more possible
 	// words along this path
@@ -307,7 +304,7 @@ func solveHelper(pos Position, path []Position, b *Board, curNode *node,
 
 	// Otherwise we are in the recursive case
 	path = append(path, pos)
-	if curNode.isWordEnd() {
+	if curNode.wordEnd {
 		// We need a copy of the path, because we are mutating it as we go
 		copyPath := make([]Position, len(path))
 		copy(copyPath, path)
@@ -320,6 +317,20 @@ func solveHelper(pos Position, path []Position, b *Board, curNode *node,
 			solveHelper(nextPos, path, b, curNode, sols)
 		}
 	}
+}
+
+func nextNode(curNode *node, char rune) *node {
+	buf := [utf8.UTFMax]byte{}
+	for i := 0; i < utf8.EncodeRune(buf[:], char) && curNode != nil; i++ {
+		curNode = curNode.getChild(buf[i])
+	}
+	// Special case: 'q' never occurs by itself, only as 'qu'
+	if char == 'q' && curNode != nil {
+		for i := 0; i < utf8.EncodeRune(buf[:], 'u') && curNode != nil; i++ {
+			curNode = curNode.getChild(buf[i])
+		}
+	}
+	return curNode
 }
 
 func inPath(path []Position, pos Position) bool {

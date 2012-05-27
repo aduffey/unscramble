@@ -5,9 +5,9 @@ import (
 )
 
 func TestDict(t *testing.T) {
-	validMsg := "Couldn't add valid word \"%s\""
-	invalidMsg := "Added invalid word \"%s\""
-	containsValidMsg := "Trie should contain \"%s\""
+	validMsg := "Couldn't add new word \"%s\""
+	duplicateMsg := "Added duplicate word \"%s\""
+	containsMsg := "Dict should contain \"%s\""
 
 	testDict := NewDict()
 
@@ -25,20 +25,19 @@ func TestDict(t *testing.T) {
 		t.Errorf(validMsg, shortSphinx)
 	}
 
-	// Try an invalid word
-	badCarrots := "Carrots"
-	if testDict.Add(badCarrots) {
-		t.Errorf(invalidMsg, badCarrots)
+	// Try a duplicate word
+	if testDict.Add(shortSphinx) {
+		t.Errorf(duplicateMsg, shortSphinx)
 	}
 
 	// Check the words we've added
 	if !testDict.Contains(longSphinx) {
-		t.Errorf(containsValidMsg, longSphinx)
+		t.Errorf(containsMsg, longSphinx)
 	}
 	if !testDict.Contains(aardvark) {
-		t.Errorf(containsValidMsg, aardvark)
+		t.Errorf(containsMsg, aardvark)
 	}
 	if !testDict.Contains(shortSphinx) {
-		t.Errorf(containsValidMsg, shortSphinx)
+		t.Errorf(containsMsg, shortSphinx)
 	}
 }
