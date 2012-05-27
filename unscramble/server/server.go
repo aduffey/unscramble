@@ -11,10 +11,9 @@ import (
 )
 
 const (
-	templateFile  = "templates/index.html"
-	dictFile      = "word.lst"
-	prefix        = "/"
-	staticRoot    = "static/"
+	templateFile = "templates/index.html"
+	dictFile     = "word.lst"
+	prefix       = "/"
 )
 
 // Globals. These will get initialized in main() and will not change afterwards.
@@ -22,11 +21,6 @@ var (
 	dict *solver.Dict
 	tmpl *template.Template
 )
-
-func fileExists(name string) bool {
-	_, err := os.Stat(name)
-	return err == nil || os.IsExist(err)
-}
 
 func serveTemplate(w http.ResponseWriter, tmpl *template.Template,
 	ctx interface{}) {
@@ -50,9 +44,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		// Go to the main page
 		ctx := emptyContext()
 		serveTemplate(w, tmpl, ctx)
-	} else if file := staticRoot + path; fileExists(file) {
-		// If the path matches a static file, serve it up
-		http.ServeFile(w, r, file)
 	} else if board, err := solver.NewBoardFromString(path); err == nil {
 		// Path represents a valid board string, show the solutions
 		solutions := solver.Solve(board, dict)
