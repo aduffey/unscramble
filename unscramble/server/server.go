@@ -15,7 +15,6 @@ const (
 	dictFile      = "word.lst"
 	prefix        = "/"
 	staticRoot    = "static/"
-	listenAddress = ":8080"
 )
 
 // Globals. These will get initialized in main() and will not change afterwards.
@@ -89,7 +88,7 @@ func loadDict(filename string) (*solver.Dict, error) {
 	return dict, nil
 }
 
-func main() {
+func init() {
 	log.Print("Initializing...\n")
 
 	var err error
@@ -109,7 +108,5 @@ func main() {
 	}
 	log.Printf("Successfully loaded template from file %s\n", templateFile)
 
-	// Serve
 	http.HandleFunc(prefix, handler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
 }
