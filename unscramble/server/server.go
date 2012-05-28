@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -54,50 +55,52 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// TODO(aduffey) maybe move this into solver?
-func loadDict(filename string) (*solver.Dict, error) {
+// loadDict loads the dictionary or panics on errors.
+func loadDict(filename string) *solver.Dict {
 	f, fileErr := os.Open(filename)
 	if fileErr != nil {
-		return nil, fileErr
+		panic(fmt.Sprintf("Error opening dictionary file: %s", fileErr))
 	}
 	defer f.Close()
 
 	dict := solver.NewDict()
 	reader := bufio.NewReader(f)
-	for {
+	for lineNbr := 0; ; lineNbr++ {
 		line, isPrefix, readErr := reader.ReadLine()
-		if isPrefix || (readErr != nil && readErr != io.EOF) {
-			return nil, readErr
+		if isPrefix {
+			panic(fmt.Sprintf("Dictionary line %d is too long", lineNbr))
+		} else if readErr != nil && readErr != io.EOF {
+			panic(fmt.Sprintf("Error reading dictionary: %s", readErr))
 		}
 		if line == nil {
 			break
 		}
-		// TODO(aduffey) check if valid
-		dict.Add(string(line))
+		word := string(line)
+		if !solver.ValidString(word) {
+			panic(fmt.Sprintf("Dictionary word \"%s\" at line %d is invalid",
+				word, lineNbr))
+		}
+		if !dict.Add(word) {
+			panic(fmt.Sprintf(
+				"Dictionary contains duplicate word \"%s\" at line %d", word,
+				lineNbr))
+		}
 	}
 
-	return dict, nil
+	return dict
 }
 
 func init() {
 	log.Print("Initializing...\n")
 
-	var err error
-	// Load the dictionary
-	dict, err = loadDict(dictFile)
-	if err != nil {
-		log.Fatalf("Could not load dictionary from file %s: %s\n", dictFile,
-			err)
-	}
-	log.Printf("Successfully loaded dictionary from file %s\n", dictFile)
+	dict = loadDict(dictFile)
 
-	// Load the template
+	var err error
 	tmpl, err = template.ParseFiles(templateFile)
 	if err != nil {
-		log.Fatalf("Could not load template from file %s: %s\n", templateFile,
-			err)
+		panic(fmt.Sprintf("Could not load template from file %s: %s\n",
+			templateFile, err))
 	}
-	log.Printf("Successfully loaded template from file %s\n", templateFile)
 
 	http.HandleFunc(prefix, handler)
 }
