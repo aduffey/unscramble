@@ -1,6 +1,7 @@
 package main
 
 import (
+	"appengine"
 	"bufio"
 	"fmt"
 	"html/template"
@@ -8,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime/debug"
 	"unscramble/solver"
 )
 
@@ -33,8 +35,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	// Handle panics so we can at least return a response code
 	defer func() {
 		if err := recover(); err != nil {
-			log.Printf("ERROR: %s\n", err)
-			log.Printf("    At url: %s", r.URL)
+			appCtx := appengine.NewContext(r)
+			appCtx.Errorf("%s: %s", err, debug.Stack())
 			http.Error(w, "Internal server error",
 				http.StatusInternalServerError)
 		}
