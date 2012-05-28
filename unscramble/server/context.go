@@ -14,9 +14,12 @@ const (
 	x3WordClass   = "x3Word"
 )
 
-// The CSS class name corresponding to a cell that is part of a specific
-// solution. Like above this must agree with classes declared elsewhere!
-const inSolutionClass = "inSolution"
+// The CSS class names corresponding to a cell that is part of a specific
+// solution. Like above these must agree with classes declared elsewhere!
+const (
+	firstLetterClass = "firstLetter"
+	inSolutionClass  = "inSolution"
+)
 
 // The context for the template.
 type context struct {
@@ -48,8 +51,12 @@ func newContext(b *solver.Board, sols []*solver.Solution) *context {
 	ctxSols := make([]*solution, len(sols))
 	for i, sol := range sols {
 		solBoard := populateBoardLetters(b)
-		for _, pos := range sol.Path {
-			solBoard[pos.Row][pos.Col].Class = inSolutionClass
+		for i, pos := range sol.Path {
+			if i == 0 {
+				solBoard[pos.Row][pos.Col].Class = firstLetterClass
+			} else {
+				solBoard[pos.Row][pos.Col].Class = inSolutionClass
+			}
 		}
 		ctxSols[i] = &solution{sol.Word, sol.Score, solBoard}
 	}

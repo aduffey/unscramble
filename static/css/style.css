@@ -201,6 +201,11 @@ table.solutionBoard td {
 	margin: 0;
 }
 
+table.solutionBoard td.firstLetter {
+	color: #fff;
+	background-color: #ffabab;
+}
+
 table.solutionBoard td.inSolution {
 	background-color: #ffabab;
 }
