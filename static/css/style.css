@@ -27,6 +27,10 @@ h2 {
 	font-size: 28px;
 }
 
+a {
+	color: #999;
+}
+
 .clearfix {
 	overflow: auto;
 }
