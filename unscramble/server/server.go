@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"runtime/debug"
@@ -19,10 +18,11 @@ const (
 	prefix       = "/"
 )
 
-// Globals. These will get initialized in main() and will not change afterwards.
+// Globals. App Engine owns main() so we'll initialize them here. These won't
+// get modified after initialization.
 var (
-	dict *solver.Dict
-	tmpl *template.Template
+	tmpl *template.Template = template.Must(template.ParseFiles(templateFile))
+	dict *solver.Dict       = loadDict(dictFile)
 )
 
 func serveTemplate(w http.ResponseWriter, tmpl *template.Template,
@@ -92,17 +92,7 @@ func loadDict(filename string) *solver.Dict {
 	return dict
 }
 
+// App Engine owns main() so we have to register the handler here.
 func init() {
-	log.Print("Initializing...\n")
-
-	dict = loadDict(dictFile)
-
-	var err error
-	tmpl, err = template.ParseFiles(templateFile)
-	if err != nil {
-		panic(fmt.Sprintf("Could not load template from file %s: %s\n",
-			templateFile, err))
-	}
-
 	http.HandleFunc(prefix, handler)
 }
