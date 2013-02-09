@@ -65,7 +65,7 @@ func loadDict(filename string) *solver.Dict {
 	}
 	defer f.Close()
 
-	dict := solver.NewDict()
+	dict := &solver.Dict{}
 	reader := bufio.NewReader(f)
 	for lineNbr := 0; ; lineNbr++ {
 		line, isPrefix, readErr := reader.ReadLine()

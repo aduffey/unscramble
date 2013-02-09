@@ -5,7 +5,7 @@ import (
 )
 
 func TestScore(t *testing.T) {
-	dict := NewDict()
+	dict := &Dict{}
 	dict.Add("warmest")
 
 	chars := [Rows][Cols]rune{
@@ -34,7 +34,7 @@ func TestScore(t *testing.T) {
 }
 
 func TestSolve(t *testing.T) {
-	dict := NewDict()
+	dict := &Dict{}
 	dict.Add("hi")
 	dict.Add("it")
 	dict.Add("hit")

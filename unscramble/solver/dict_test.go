@@ -9,7 +9,7 @@ func TestDict(t *testing.T) {
 	duplicateMsg := "Added duplicate word \"%s\""
 	containsMsg := "Dict should contain \"%s\""
 
-	testDict := NewDict()
+	testDict := &Dict{}
 
 	// Add some valid words
 	longSphinx := "sphinxofblackquartzjudgemyvow"

@@ -2,24 +2,19 @@ package solver
 
 // Dict represents a dictionary that can store arbitrary strings. It is
 // essentially a set of strings, not storing duplicates, that permits insertion
-// and membership testing.
+// and membership testing. Its zero value is an empty Dict.
 type Dict struct {
 	// This root node is special. It represents the empty string. Its value
 	// field is ignored, and it will never have a "next" node (only children).
 	// This also allows us to avoid treating the empty dictionary as a special
 	// case in our methods.
-	root *node
-}
-
-// NewDict creates an empty dictionary.
-func NewDict() *Dict {
-	return &Dict{&node{}}
+	root node
 }
 
 // Add inserts a string into the dictionary. Returns true if the string was
 // successfully added or false if the string was already in the dictionary.
-func (d Dict) Add(str string) bool {
-	curNode := d.root
+func (d *Dict) Add(str string) bool {
+	curNode := &d.root
 	for i := 0; i < len(str); i++ {
 		curNode = curNode.addChild(str[i])
 	}
@@ -30,8 +25,8 @@ func (d Dict) Add(str string) bool {
 
 // Contains returns true if and only if the dictionary contains the given
 // string.
-func (d Dict) Contains(str string) bool {
-	curNode := d.root
+func (d *Dict) Contains(str string) bool {
+	curNode := &d.root
 	for i := 0; i < len(str); i++ {
 		curNode = curNode.getChild(str[i])
 		if curNode == nil {

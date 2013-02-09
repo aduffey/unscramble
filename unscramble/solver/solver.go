@@ -15,15 +15,15 @@ const (
 	Cols = 4
 )
 
-// A score modifier applied to position on the board.
+// Modifier represents a score multiplier applied to a position on the board.
 type Modifier int
 
 const (
-	None     Modifier = iota
-	X2Letter Modifier = iota
-	X2Word   Modifier = iota
-	X3Letter Modifier = iota
-	X3Word   Modifier = iota
+	None Modifier = iota
+	X2Letter
+	X2Word
+	X3Letter
+	X3Word
 )
 
 var letterVals = map[rune]int{
@@ -55,17 +55,17 @@ var letterVals = map[rune]int{
 	'z': 10,
 }
 
-// Represents the game board.
+// Board represents the game board.
 type Board struct {
 	Chars     [Rows][Cols]rune
 	Modifiers [Rows][Cols]Modifier
 }
 
-// Create a game board from a string representation. The format is a simple list
-// of letters on the board, in row major order. Prepending a letter with "2" or
-// "3" specifies that cell as a double or triple letter bonus. Prepending a
-// letter with "22" or "33" specifies that cell as a double or triple word
-// bonus.
+// NewBoardFromString creates a game board from a string representation. The
+// format is a simple list of letters on the board, in row major order.
+// Prepending a letter with "2" or "3" specifies that cell as a double or triple
+// letter bonus. Prepending a letter with "22" or "33" specifies that cell as a
+// double or triple word bonus.
 //
 // A "Qu" cell is represented simply by a "q" character.
 //
@@ -137,7 +137,7 @@ func (pe parseError) Error() string {
 	return string(pe)
 }
 
-// Represents the position of a cell on the board.
+// Position represents the position of a cell on the board.
 type Position struct {
 	Row int
 	Col int
@@ -145,7 +145,7 @@ type Position struct {
 
 // ----- Describe the solution -----
 
-// A solution to the game.
+// Solution represents a solution to the game.
 type Solution struct {
 	Word  string
 	Score int
@@ -263,14 +263,14 @@ func (sols solutions) Swap(i int, j int) {
 	sols[j], sols[i] = sols[i], sols[j]
 }
 
-// Find all the solutions on the board. The solutions returned will be ordered
-// by score, highest to lowest. If a word can be formed two or more ways, the
-// solutions will only contain the highest scoring possibility.
+// Solve finds all the solutions to the board. The solutions returned will be
+// ordered by score, highest to lowest. If a word can be formed two or more
+// ways, the solutions will only contain the highest scoring possibility.
 func Solve(b *Board, dict *Dict) []*Solution {
 	var sols solutions
 	for i, row := range b.Chars {
 		for j, _ := range row {
-			solveHelper(Position{i, j}, []Position{}, b, dict.root, &sols)
+			solveHelper(Position{i, j}, []Position{}, b, &dict.root, &sols)
 		}
 	}
 
@@ -279,7 +279,7 @@ func Solve(b *Board, dict *Dict) []*Solution {
 	// Generate a new list of solutions holding only unique solutions with the
 	// highest score
 	uniqueSols := make([]*Solution, 0, len(sols))
-	uniques := NewDict()
+	uniques := &Dict{}
 	for _, sol := range sols {
 		if !uniques.Contains(sol.Word) {
 			uniqueSols = append(uniqueSols, sol)
